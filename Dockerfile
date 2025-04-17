@@ -1,33 +1,31 @@
-# 1. Peruskuva: Node, koska rakennetaan projekti
+# 1. Peruskuva: Node, koska tarvitsemme npm:n
 FROM node:18-alpine AS build
 
 # 2. Työhakemisto
 WORKDIR /app
 
-# 3. Kopioi riippuvuuksien määrittelyt ja asenna ne
+# 3. Kopioi riippuvuudet ja asenna
 COPY package*.json ./
 RUN npm install
 
-# 4. Kopioi muu koodi ja rakenna se
+# 4. Kopioi muu lähdekoodi ja rakenna
 COPY . .
-
-# HUOM: Jos sinun projektissa tarvitaan build-vaihe (esim. React/Vue frontend) säilytä tämä:
 RUN npm run build
 
-# 5. Käytetään taas Nodea tuotantokäyttöön
+# 5. Käytä pientä Node-kuvaa julkaisuvaiheessa
 FROM node:18-alpine
 
-# 6. Työhakemisto kontissa
+# 6. Työhakemisto ajovaiheessa
 WORKDIR /app
 
-# 7. Kopioi build-vaiheen tulokset ja riippuvuudet
-COPY --from=build /app /app
+# 7. Asenna kevyt serve-palvelin globaalisti
+RUN npm install -g serve
 
-# 8. Asenna vain tuotantoriippuvuudet
-RUN npm install --only=production
+# 8. Kopioi pelkkä rakennettu frontend-dist hakemisto
+COPY --from=build /app/dist ./dist
 
-# 9. Avaa portti (yleensä 3000, mutta voi vaihtaa)
+# 9. Avaa portti (voit vaihtaa, oletus 3000)
 EXPOSE 3000
 
-# 10. Käynnistä sovellus
-CMD ["node", "server.js"]
+# 10. Käynnistä staattinen palvelin
+CMD ["serve", "-s", "dist", "-l", "3000"]
