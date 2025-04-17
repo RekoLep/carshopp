@@ -10,18 +10,24 @@ RUN npm install
 
 # 4. Kopioi muu koodi ja rakenna se
 COPY . .
+
+# HUOM: Jos sinun projektissa tarvitaan build-vaihe (esim. React/Vue frontend) säilytä tämä:
 RUN npm run build
 
-# 5. Ota käyttöön kevyt nginx-pohjainen palvella valmis buildi
-FROM nginx:stable-alpine
+# 5. Käytetään taas Nodea tuotantokäyttöön
+FROM node:18-alpine
 
-# 6. Kopioi rakennettu sovellus nginxin oletushakemistoon
-#COPY --from=build /app/dist /usr/share/nginx/html
+# 6. Työhakemisto kontissa
+WORKDIR /app
 
-# 7. (ei tarvita nginx.conf kopiointia nyt)
+# 7. Kopioi build-vaiheen tulokset ja riippuvuudet
+COPY --from=build /app /app
 
-# 8. Avaa portti 80 (ei 5173!)
-EXPOSE 80
+# 8. Asenna vain tuotantoriippuvuudet
+RUN npm install --only=production
 
-# 9. Käynnistä nginx
-CMD ["nginx", "-g", "daemon off;"]
+# 9. Avaa portti (yleensä 3000, mutta voi vaihtaa)
+EXPOSE 3000
+
+# 10. Käynnistä sovellus
+CMD ["node", "server.js"]
