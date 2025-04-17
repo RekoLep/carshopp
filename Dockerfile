@@ -13,7 +13,7 @@ COPY . .
 RUN npm run build
 
 # 5. Ota käyttöön kevyt nginx-pohjainen palvella valmis buildi
-# FROM nginx:stable-alpine
+FROM nginx:stable-alpine
 
 # 6. Kopioi rakennettu sovellus nginxin oletushakemistoon
 #COPY --from=build /app/dist /usr/share/nginx/html
