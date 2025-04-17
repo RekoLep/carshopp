@@ -1,5 +1,5 @@
 # 1. Peruskuva: Node, koska rakennetaan projekti
-FROM node:18 AS build
+FROM node:18-alpine AS build
 
 # 2. Työhakemisto
 WORKDIR /app
@@ -15,14 +15,13 @@ RUN npm run build
 # 5. Ota käyttöön kevyt nginx-pohjainen palvella valmis buildi
 FROM nginx:stable-alpine
 
-# Poista tai kommentoi pois tämä rivi:
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# 6. Kopioi rakennettu sovellus nginxin oletushakemistoon
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# 7. Kopioi oma nginx-konfiguraatio (valinnainen mutta voi olla hyödyllinen)
-# COPY nginx.conf /etc/nginx/nginx.conf
+# 7. (ei tarvita nginx.conf kopiointia nyt)
 
-# 8. Avaa portti
-EXPOSE 5173
+# 8. Avaa portti 80 (ei 5173!)
+EXPOSE 80
 
 # 9. Käynnistä nginx
 CMD ["nginx", "-g", "daemon off;"]
