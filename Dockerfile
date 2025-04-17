@@ -15,8 +15,8 @@ RUN npm run build
 # 5. Ota käyttöön kevyt nginx-pohjainen palvella valmis buildi
 FROM nginx:stable-alpine
 
-# 6. Kopioi buildattu sovellus nginxin oletushakemistoon
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Poista tai kommentoi pois tämä rivi:
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # 7. Kopioi oma nginx-konfiguraatio (valinnainen mutta voi olla hyödyllinen)
 # COPY nginx.conf /etc/nginx/nginx.conf
