@@ -16,7 +16,7 @@ RUN npm run build
 FROM nginx:stable-alpine
 
 # 6. Kopioi rakennettu sovellus nginxin oletushakemistoon
-COPY --from=build /app/dist /usr/share/nginx/html
+#COPY --from=build /app/dist /usr/share/nginx/html
 
 # 7. (ei tarvita nginx.conf kopiointia nyt)
 
