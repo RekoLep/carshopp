@@ -16,13 +16,13 @@ RUN npm run build
 FROM nginx:stable-alpine
 
 # 6. Kopioi buildattu sovellus nginxin oletushakemistoon
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # 7. Kopioi oma nginx-konfiguraatio (valinnainen mutta voi olla hyödyllinen)
 # COPY nginx.conf /etc/nginx/nginx.conf
 
 # 8. Avaa portti
-EXPOSE 80
+EXPOSE 5173
 
 # 9. Käynnistä nginx
 CMD ["nginx", "-g", "daemon off;"]
